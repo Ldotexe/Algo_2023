@@ -1,0 +1,57 @@
+#include <iostream>
+#include <string>
+#include <vector>
+
+class FindStr {
+private:
+    size_t size_;
+    size_t pattern_size_;
+    std::string str_;
+    std::vector<size_t> prefix_;
+
+public:
+    void GetPatternStr();
+    std::vector<size_t> FindPatternPlaces();
+};
+
+void PrintVector(std::vector<size_t> vec);
+
+int main() {
+    FindStr str;
+    str.GetPatternStr();
+    PrintVector(str.FindPatternPlaces());
+    return 0;
+}
+
+void FindStr::GetPatternStr() {
+    std::string str;
+    std::string pattern;
+    std::cin >> str >> pattern;
+    str_ = pattern + '!' + str;
+    size_ = str_.size();
+    pattern_size_ = pattern.size();
+    prefix_.resize(pattern_size_ + 1);
+}
+
+std::vector<size_t> FindStr::FindPatternPlaces() {
+    std::vector<size_t> ans;
+    for (size_t i = 1; i < size_; ++i) {
+        size_t j = 0;
+        for (j = prefix_[std::min(i - 1, pattern_size_)]; j > 0 && str_[i] != str_[j]; j = prefix_[j - 1]) {
+        }
+        if (str_[i] == str_[j]) {
+            ++j;
+        }
+        prefix_[std::min(i, pattern_size_)] = j;
+        if (j == pattern_size_) {
+            ans.push_back(i - j - j);
+        }
+    }
+    return ans;
+}
+
+void PrintVector(std::vector<size_t> vec) {
+    for (size_t i = 0; i < vec.size(); ++i) {
+        std::cout << vec[i] << '\n';
+    }
+}
